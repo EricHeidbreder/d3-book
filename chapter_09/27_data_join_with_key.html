@@ -156,19 +156,35 @@
 					//
 					//Exercise: Modify this code to remove the correct label each time!
 					//
-					svg.selectAll("text")
-					   .data(dataset, key)		//Bind data with custom key function
-					   .transition()
-					   .duration(500)
-					   .text(function(d) {
-					   		return d.value;
-					   })
-					   .attr("x", function(d, i) {
+					var text = svg.selectAll('text')
+					.data(dataset, key)
+
+					text.enter()
+						.append('text')
+						.text((d) => d.values)
+						.attr('text-anchor', 'middle')
+						.attr('x', w + xScale.bandwidth() / 2) // add the bandwidth to the total width to get the perfect text placement
+						.attr('y', (d) => h - yScale(d.value) + 14)
+						.attr('fill', 'white')
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "11px")
+						.attr("fill", "white")
+						.merge(text)
+					.transition()
+					.duration(500)
+					.text((d) => d.value)
+					.attr("x", function(d, i) {
 							return xScale(i) + xScale.bandwidth() / 2;
-					   })
-					   .attr("y", function(d) {
+					})
+					.attr("y", function(d) {
 							return h - yScale(d.value) + 14;
-					   });
+					})
+
+					text.exit()
+						.transition()
+						.duration(500)
+						.attr('x', -xScale.bandwidth() / 2)
+						.remove()
 
 				});
 

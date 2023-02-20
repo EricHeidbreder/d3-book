@@ -102,7 +102,7 @@
 					
 					allCircles.attr("fill", "black")
 						.filter(function(d) {
-							return d[0] <= threshold;
+							return d[1] <= threshold & d[0] <=threshold;
 						})
 						.attr("fill", "red");
 

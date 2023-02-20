@@ -6,8 +6,14 @@
 		<script type="text/javascript" src="../d3.js"></script>
 		<style type="text/css">
 
+
 			rect:hover {
-				fill: orange;
+				fill: rgb(240, 161, 14);
+				<!-- do the transitions here instead of JS to keep transitions from overwriting each other -->
+				-moz-transition: 0.25s; 
+				-o-transition: 0.25s;
+				-webkit-transition: 0.25s;
+				transition: 0.25s;
 			}
 
 		</style>
@@ -36,6 +42,8 @@
 						.append("svg")
 						.attr("width", w)
 						.attr("height", h);
+
+			var g = svg.append('g')
 
 			//Create bars
 			svg.selectAll("rect")
@@ -76,7 +84,7 @@
 			   })
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
-			   .attr("fill", "white");
+			   .attr("fill", "white")
 			
 			//Define sort function
 			var sortBars = function() {
@@ -90,8 +98,19 @@
 				   .attr("x", function(d, i) {
 				   		return xScale(i);
 				   });
-
-			};			
+				   
+				// These transitions seem to happen at the same time, but maybe they're slightly delayed?
+				
+				svg.selectAll("text")
+				   .sort(function(a, b) {
+					   return d3.ascending(a, b);
+				   	})
+				   .transition()
+				   .duration(1000)
+				   .attr("x", function(d, i) {
+				   		return xScale(i) + xScale.bandwidth() / 2;
+				   });
+				};		
 			
 		</script>
 	</body>

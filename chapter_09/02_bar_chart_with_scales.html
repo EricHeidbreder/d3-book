@@ -10,6 +10,9 @@
 	</head>
 	<body>
 		<script type="text/javascript">
+			d3.select('body')
+				.append('p')
+				.text('Click this text to update chart with new data values')
 
 			//Width and height
 			var w = 600;
@@ -70,6 +73,16 @@
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
 			   .attr("fill", "white");
+
+			d3.select('p')
+			   .on('click', function () {
+				dataset = [ 11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
+				5, 10, 13, 19, 21, 25, 22, 18, 15, 13 ];
+					svg.selectAll('rect')
+						.data(dataset)
+						.attr('y', d => h - yScale(d))
+						.attr('height', d => yScale(d))
+			   });
 			
 		</script>
 	</body>

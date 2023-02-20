@@ -82,7 +82,7 @@
 				.on("click", function() {
 
 					//Remove one value from dataset
-					dataset.shift();
+					dataset.pop();
 					
 					//Update scale domains
 					xScale.domain(d3.range(dataset.length));	//Recalibrate the x scale domain, given the new length of dataset
@@ -119,6 +119,9 @@
 						.attr("width", xScale.bandwidth())		//Set new width value, based on the updated xScale
 						.attr("height", function(d) {			//Set new height value, based on the updated yScale
 							return yScale(d);
+						})
+						.attr("fill", function(d) {				//Sets the fill value
+							return "rgb(0, 0, " + Math.round(d * 10) + ")";
 						});
 
 					//Exit…
@@ -134,19 +137,36 @@
 					//
 					//Exercise: Modify this code to remove the correct label each time!
 					//
-					svg.selectAll("text")
-					   .data(dataset)
-					   .transition()
-					   .duration(500)
-					   .text(function(d) {
-					   		return d;
-					   })
-					   .attr("x", function(d, i) {
+
+					var text = svg.selectAll('text')
+					.data(dataset)
+
+					text.enter()
+						.append('text')
+						.text((d) => d)
+						.attr('text-anchor', 'middle')
+						.attr('x', w + xScale.bandwidth() / 2) // add the bandwidth to the total width to get the perfect text placement
+						.attr('y', (d) => h - yScale(d) + 14)
+						.attr('fill', 'white')
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "11px")
+						.attr("fill", "white")
+						.merge(text)
+					.transition()
+					.duration(500)
+					.text((d) => d)
+					.attr("x", function(d, i) {
 							return xScale(i) + xScale.bandwidth() / 2;
-					   })
-					   .attr("y", function(d) {
+					})
+					.attr("y", function(d) {
 							return h - yScale(d) + 14;
-					   });
+					})
+
+					text.exit()
+						.transition()
+						.duration(500)
+						.attr('x', w + xScale.bandwidth() / 2)
+						.remove()
 
 				});
 

@@ -68,11 +68,21 @@
 			   		return xScale(i) + xScale.bandwidth() / 2;
 			   })
 			   .attr("y", function(d) {
-			   		return h - yScale(d) + 14;
+					if (d <= 1) {
+						return h - yScale(d) - 5
+					} else {
+						return h - yScale(d) + 14;
+					}
 			   })
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
-			   .attr("fill", "white");
+			   .attr("fill", (d) => {
+					if (d <= 1) {
+						return "black"
+					} else {
+						return "white"
+					}
+				});
 
 
 
@@ -122,8 +132,20 @@
 					   		return xScale(i) + xScale.bandwidth() / 2;
 					   })
 					   .attr("y", function(d) {
-					   		return h - yScale(d) + 14;
-					   });
+						if (d <= 1) {
+							return h - yScale(d) - 5
+						} else {
+							return h - yScale(d) + 14;
+						}
+				   		})
+						.attr("fill", (d) => {
+							if (d <= 1) {
+								return "black"
+							} else {
+								return "white"
+							}
+						});
+
 					   				
 				});
 

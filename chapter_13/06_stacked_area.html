@@ -53,10 +53,10 @@
 					var col = cols[i];
 
 					//If the value exists…
-					if (d[cols[i]]) {
-						row[cols[i]] = +d[cols[i]];  //Convert from string to int
+					if (d[col]) {
+						row[col] = +d[col];  //Convert from string to int
 					} else {  //Otherwise…
-						row[cols[i]] = 0;  //Set to zero
+						row[col] = 0;  //Set to zero
 					}
 				}
 
@@ -80,7 +80,7 @@
 
 				//Data, stacked
 				var series = stack(dataset);
-				// console.log(series);
+				console.log(series);
 
 				//Create scale functions
 				xScale = d3.scaleTime()

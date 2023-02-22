@@ -16,7 +16,7 @@
 			var h = 300;
 
 			//Original data
-			var dataset = {
+			const dataset = {
 				nodes: [
 					{ name: "Adam" },
 					{ name: "Bob" },
@@ -48,9 +48,27 @@
 
 			//Initialize a simple force layout, using the nodes and edges in dataset
 			var force = d3.forceSimulation(dataset.nodes)
-						  .force("charge", d3.forceManyBody())
-						  .force("link", d3.forceLink(dataset.edges))
+						  .force("charge", d3.forceManyBody().strength(-32))
+						  .force("link", d3.forceLink(dataset.edges).distance(50))
 						  .force("center", d3.forceCenter().x(w/2).y(h/2));
+
+			// countTargets will count up the number of sources
+			var countTargets = d3.nest()
+					.key(d => d.target.name)
+					.rollup(v => {
+						return {
+							cnt: v.length
+						}
+					})
+					.entries(dataset.edges);
+			
+			// instantiate empty object
+			var countTargetsReindex = {};
+
+			// Get the sources into a dictionary so they can be referenced later for sizing
+			countTargets.forEach(function (d) {
+				countTargetsReindex[d.key] = d.value.cnt
+			});
 
 			var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -66,17 +84,28 @@
 				.enter()
 				.append("line")
 				.style("stroke", "#ccc")
-				.style("stroke-width", 1);
+				.style("stroke-width", (d) => countTargetsReindex[d.target.name] * 2);
 			
 			//Create nodes as circles
 			var nodes = svg.selectAll("circle")
 				.data(dataset.nodes)
 				.enter()
 				.append("circle")
-				.attr("r", 10)
-				.style("fill", function(d, i) {
-					return colors(i);
-				});
+					.attr("r", 10)
+					.style("fill", function(d, i) {
+						return colors(i);
+					})
+					.style('stroke', 'rgba(0,0,0,.3')
+					.style('stroke-width', '8px');
+
+			var masks = svg.selectAll('mask')
+			.data(dataset.nodes)
+			.enter()
+			.append('mask')
+			.attr('id', (d, i) => 'circle-mask' + i)
+				.append('circle')
+				.attr('r', 10)
+				.style("fill", 'white');
 
 			//Add a simple tooltip
 			nodes.append("title")
@@ -91,9 +120,13 @@
 					 .attr("y1", function(d) { return d.source.y; })
 					 .attr("x2", function(d) { return d.target.x; })
 					 .attr("y2", function(d) { return d.target.y; });
+					 
+				masks.attr("cx", function(d) { return d.x; })
+				  	.attr("cy", function(d) { return d.y; });
 			
 				nodes.attr("cx", function(d) { return d.x; })
-					 .attr("cy", function(d) { return d.y; });
+					 .attr("cy", function(d) { return d.y; })
+					 .attr('mask', (d, i) => 'url(#circle-mask' + i + ')');
 	
 			});
 

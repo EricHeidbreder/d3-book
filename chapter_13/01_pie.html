@@ -20,10 +20,18 @@
 			//Width and height
 			var w = 300;
 			var h = 300;
+			var shorterSide = () => {
+				if (w < h) {
+					return w
+				} else {
+					return h
+				}
+			} 
 
 			var dataset = [ 5, 10, 20, 45, 6, 25 ];
-
-			var outerRadius = w / 2;
+			
+			// Handle cases where the svg is not square
+			var outerRadius = shorterSide() / 2
 			var innerRadius = 0;
 			var arc = d3.arc()
 						.innerRadius(innerRadius)
@@ -46,7 +54,7 @@
 						  .enter()
 						  .append("g")
 						  .attr("class", "arc")
-						  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+						  .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
 			
 			//Draw arc paths
 			arcs.append("path")
